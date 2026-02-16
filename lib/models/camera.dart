@@ -7,6 +7,7 @@ class Camera {
   final double pricePerDay;
   final String? imageUrl;
   final bool isAvailable;
+  final int stock;
 
   Camera({
     required this.id,
@@ -16,6 +17,7 @@ class Camera {
     required this.pricePerDay,
     this.imageUrl,
     required this.isAvailable,
+    required this.stock,
   });
 
   factory Camera.fromJson(Map<String, dynamic> json) {
@@ -27,6 +29,7 @@ class Camera {
       pricePerDay: double.parse(json['price_per_day'].toString()),
       imageUrl: json['image_url'],
       isAvailable: json['is_available'] == 1 || json['is_available'] == true,
+      stock: int.parse(json['stock'].toString()),
     );
   }
 }

@@ -22,7 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       final profile = await _apiService.getProfile();
       setState(() {
-        _profile = profile['data'] ?? profile; // Handle different response format
+        _profile = profile['data'] ?? profile;
         _isLoading = false;
       });
     } catch (e) {
@@ -66,6 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     final name = _profile?['name'] ?? 'User';
     final email = _profile?['email'] ?? '';
+    final phone = _profile?['phone_number'] ?? _profile?['phone'] ?? '';
     final createdAt = _profile?['created_at'] ?? '';
 
     return SingleChildScrollView(
@@ -124,6 +125,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: Text('Email'),
                   subtitle: Text(email),
                 ),
+                Divider(height: 1),
+                ListTile(
+                  leading: Icon(Icons.phone, color: Colors.blue),
+                  title: Text('Nomor Telepon'),
+                  subtitle: Text(phone.isNotEmpty ? phone : '-'),
+                ),
                 if (createdAt.isNotEmpty) ...[
                   Divider(height: 1),
                   ListTile(
@@ -150,10 +157,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       context: context,
                       applicationName: 'TookShot',
                       applicationVersion: '1.0.0',
-                      applicationIcon: Icon(Icons.camera_alt, size: 48, color: Colors.blue),
+                      applicationIcon: Icon(Icons.camera_alt,
+                          size: 48, color: Colors.blue),
                       children: [
                         SizedBox(height: 16),
-                        Text('TookShot adalah aplikasi peminjaman kamera online yang memudahkan Anda untuk menyewa berbagai jenis kamera sesuai kebutuhan.'),
+                        Text(
+                            'TookShot adalah aplikasi peminjaman kamera online yang memudahkan Anda untuk menyewa berbagai jenis kamera sesuai kebutuhan.'),
                         SizedBox(height: 8),
                         Text('© 2026 TookShot. All rights reserved.'),
                       ],

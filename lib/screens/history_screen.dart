@@ -55,8 +55,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
         return Colors.green;
       case 'returned':
         return Colors.grey;
-      default:
+      case 'rejected':
+        return Colors.red;
+      default:  
         return Colors.grey;
+
     }
   }
 
@@ -70,6 +73,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
         return 'Sudah Dibayar';
       case 'returned':
         return 'Selesai';
+      case 'rejected':
+        return 'Ditolak oleh Toko';
       default:
         return status;
     }

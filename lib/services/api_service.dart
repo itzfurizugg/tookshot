@@ -32,7 +32,12 @@ class ApiService {
   }
 
   // ========== AUTHENTICATION ==========
-  Future<Map<String, dynamic>> register(String name, String email, String password) async {
+  Future<Map<String, dynamic>> register(
+    String name,
+    String email,
+    String password,
+    String phone,
+  ) async {
     final response = await http.post(
       Uri.parse('$baseUrl/register'),
       headers: await getHeaders(),
@@ -41,6 +46,7 @@ class ApiService {
         'email': email,
         'password': password,
         'password_confirmation': password,
+        'phone_number': phone,
       }),
     );
 
@@ -107,7 +113,8 @@ class ApiService {
   }
 
   // ========== PEMBAYARAN & RENTAL ==========
-  Future<Map<String, dynamic>> createRental(int cameraId, String startDate, String endDate) async {
+  Future<Map<String, dynamic>> createRental(
+      int cameraId, String startDate, String endDate) async {
     final response = await http.post(
       Uri.parse('$baseUrl/rentals'),
       headers: await getHeaders(),
@@ -123,14 +130,10 @@ class ApiService {
     }
 
     final data = jsonDecode(response.body);
-    
-    // Debug logging
     print('Create Rental Response: $data');
-    
     return data;
   }
 
-  // ✅ FIXED: pakai await getHeaders() bukan manual $token
   Future<Map<String, dynamic>> payRental(int rentalId, String method) async {
     final response = await http.post(
       Uri.parse('$baseUrl/rentals/$rentalId/pay'),
@@ -148,7 +151,7 @@ class ApiService {
   // ========== HISTORI ==========
   Future<List<dynamic>> getUserRentals() async {
     final response = await http.get(
-      Uri.parse('$baseUrl/rentals'), // GET /rentals - return rental milik user yg login
+      Uri.parse('$baseUrl/rentals'),
       headers: await getHeaders(),
     );
 

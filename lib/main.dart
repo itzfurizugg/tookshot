@@ -1,5 +1,6 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/home_screen.dart';
@@ -9,46 +10,60 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // Fungsi untuk cek apakah sudah login
+  Future<bool> _checkLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isLogin') ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Definisikan warna utama agar bisa dipakai berulang
     const Color myCustomBlue = Color(0xFF55829E);
 
     return MaterialApp(
       title: 'TookShot',
+      debugShowCheckedModeBanner: false,
+
       theme: ThemeData(
-        useMaterial3: true, // Mengaktifkan Material 3
-        
-        // Menentukan skema warna berdasarkan warna biru pilihanmu
+        useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: myCustomBlue,
           primary: myCustomBlue,
         ),
-
-        // Mengatur tema AppBar agar seragam
         appBarTheme: const AppBarTheme(
           backgroundColor: myCustomBlue,
           foregroundColor: Colors.white,
           elevation: 0,
         ),
-
-        // Mengatur warna indikator loading secara global
         progressIndicatorTheme: const ProgressIndicatorThemeData(
           color: myCustomBlue,
         ),
-
-        // Mengatur gaya tombol agar tidak kembali ke ungu
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: myCustomBlue,
             foregroundColor: Colors.white,
           ),
         ),
-
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/login',
+
+      home: FutureBuilder<bool>(
+        future: _checkLogin(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          // Jika sudah login → Home, jika belum → Login
+          return snapshot.data == true ? HomeScreen() : LoginScreen();
+        },
+      ),
+
+      // Routes tetap bisa dipakai untuk navigasi
       routes: {
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegisterScreen(),
